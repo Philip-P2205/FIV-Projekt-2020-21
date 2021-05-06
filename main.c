@@ -1,4 +1,6 @@
 #include "main.h"
+#include "Library/lcd.h"
+#include "Library/binconst.h"
 /**
  * main.c
  */
@@ -23,6 +25,11 @@ int main(void)
 
     __enable_interrupt();
 
+    lcdConfig();
+    lcdInit();
+
+    lcdSendChar(B8(01001000));
+
     while (1)
     {
 //        if (TASK_ENABLED(TASK_DEBOUNCE))
@@ -39,8 +46,7 @@ int main(void)
 
 void configIO()
 {
-    P1DIR |= B8(00000001);
-//    P1DIR |= BIT0;
+    P1DIR |= BIT0;
 }
 
 void init()

@@ -16,8 +16,8 @@
 #define BIT_DISABLED(t, b) (((t) & (b)) == 0)
 
 #define TIE_TO_STATE(t, b, s) { \
-    if (s) BIT_ENABLE(t, b);    \
-    else BIT_DISABLE(t, b);     \
+    if (s) BIT_ENABLE(t, b);     \
+    else BIT_DISABLE(t, b);      \
 }
 
 #define _UINT(bits) uint##bits##_t

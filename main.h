@@ -9,7 +9,6 @@
 #include "Library/debounce.h"
 #include "Library/timer.h"
 #include "Library/util.h"
-#include "Library/binconst.h"
 
 #ifndef MAIN_H_
 #define MAIN_H_
