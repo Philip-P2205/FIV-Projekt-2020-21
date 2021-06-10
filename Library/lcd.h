@@ -8,9 +8,11 @@
 #ifndef LIBRARY_LCD_H_
 #define LIBRARY_LCD_H_
 
-#include "util.h"
 #include <msp430.h>
 #include <stdint.h>
+#include "util.h"
+#include "binconst.h"
+#include "timer.h"
 
 #define LCD_RS_PORT         P8
 #define LCD_RS_PIN          BIT1
@@ -42,7 +44,7 @@
 
 #define LCD_RS              LCD_RS_PIN
 #define LCD_RW              LCD_RW_PIN
-#define LCD_E               LCD_E
+#define LCD_E               LCD_E_PIN
 #define LCD_D_SER           LCD_D_SER_PIN
 #define LCD_D_SRCLK         LCD_D_SRCLK_PIN
 #define LCD_D_RCLK          LCD_D_RCLK_PIN
@@ -51,6 +53,7 @@ extern void configLCD();
 extern void initLCD();
 
 extern void sendData(uint8_t data);
-extern void sendCmd();
+extern void sendCmd(uint8_t data);
+extern void sendChar(uint8_t data);
 
 #endif /* LIBRARY_LCD_H_ */
