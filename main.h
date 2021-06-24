@@ -2,13 +2,15 @@
  * main.h
  *
  *  Created on: 01.04.2021
- *      Author: Philip Prohaska
+ *      Authors: Philip Prohaska, Jakob Posselt
  */
 #include <msp430.h>
 #include <stdint.h>
+#include "Library/binconst.h"
 #include "Library/debounce.h"
 #include "Library/timer.h"
 #include "Library/util.h"
+#include "Library/ps2.h"
 
 #ifndef MAIN_H_
 #define MAIN_H_
@@ -35,6 +37,10 @@
 #define TASK_DISABLE(task)  todo_tasks  &= ~(task)
 #define TASK_ENABLED(task)  (todo_tasks &   (task))
 
+// Interrupt ID for user interrupts
+#define KBINT 0x01
+
 extern uint16_t todo_tasks;
+extern uint8_t user_interrupts;
 
 #endif /* MAIN_H_ */
