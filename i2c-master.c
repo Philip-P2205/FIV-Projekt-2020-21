@@ -1,5 +1,33 @@
 #include <msp430.h>
 
+//  MSP430F552x Demo - USCI_B0 I2C Master TX single bytes to MSP430 Slave
+//
+//  Description: This demo connects two MSP430's via the I2C bus. The master
+//  transmits to the slave. This is the master code. It continuously
+//  transmits 00h, 01h, ..., 0ffh and demonstrates how to implement an I2C
+//  master transmitter sending a single byte using the USCI_B0 TX interrupt.
+//  ACLK = n/a, MCLK = SMCLK = BRCLK = default DCO = ~1.045MHz
+//
+// ***to be used with "MSP430F55xx_uscib0_i2c_07.c" ***
+//
+//                                /|\  /|\
+//                MSP430F5529     10k  10k     MSP430F5529
+//                   slave         |    |         master
+//             -----------------   |    |   -----------------
+//           -|XIN  P3.0/UCB0SDA|<-|----+->|P3.0/UCB0SDA  XIN|-
+//            |                 |  |       |                 |
+//           -|XOUT             |  |       |             XOUT|-
+//            |     P3.1/UCB0SCL|<-+------>|P3.1/UCB0SCL     |
+//            |                 |          |                 |
+//
+//   Bhargavi Nisarga
+//   Texas Instruments Inc.
+//   April 2009
+//   Built with CCSv4 and IAR Embedded Workbench Version: 4.21
+//******************************************************************************
+//The code from TI company, use reference volt to pull-up SDA and SCL.
+
+
 #define LCD_ADDRESS 0x27
 // Byte count for sending values to lcd
 #define LCD_TX_BYTE_CNT 1
