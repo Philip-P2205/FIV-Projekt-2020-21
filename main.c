@@ -6,7 +6,7 @@
  */
 
 uint16_t todo_tasks;
-uint8_t  data;
+uint8_t data;
 
 void configIO();
 
@@ -28,12 +28,16 @@ int main(void)
 
     configLCD();
 
-    data = 0x0f;
-    initLCD();
+    data = 'H';
+//    initLCD();
+
+//    lcd_buffer = B16(0000000, 11000000);
+    lcd_buffer = 0xaaaa;
+    __sendBuffer();
     while (1)
     {
-        sendData(data);
-        delayMs(500);
+//        sendChar(data);
+//        delayMs(500);
     }
 }
 
