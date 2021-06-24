@@ -16,7 +16,7 @@
 #define MAIN_H_
 
 #define TASK_DEBOUNCE  BIT0
-#define TASK_1  BIT1
+#define TASK_PS2               BIT1
 #define TASK_2  BIT2
 #define TASK_3  BIT3
 #define TASK_4  BIT4

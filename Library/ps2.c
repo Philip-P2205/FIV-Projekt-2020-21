@@ -107,18 +107,21 @@ inline void isrPS2()
                     else
                         character = keymap[data];
 
-                    // Shift buffer
-                    uint8_t i;
-                    for (i = 63; i > 0; --i)
-                        buffer[i] = buffer[(uint8_t) (i - 1)];
+                    if (character != 0) // Ensure only valid characters are sent to the buffer
+                    {
+                        // Shift buffer
+                        uint8_t i;
+                        for (i = 63; i > 0; --i)
+                            buffer[i] = buffer[(uint8_t) (i - 1)];
 
-                    buffer[0] = character;
-                    buffer[32] = data;
-                    data = 0;
-                    BIT_DISABLE(keyboard_status, KB_SHIFT);
+                        buffer[0] = character;
+                        buffer[32] = data;
+                        data = 0;
+                        BIT_DISABLE(keyboard_status, KB_SHIFT);
 
-                    user_interrupts |= KBINT;
-                    SFRIFG1 |= NMIIFG; // Cause software interrupt
+                        user_interrupts |= KBINT;
+                        SFRIFG1 |= NMIIFG; // Cause software interrupt
+                    }
                 }
                 else // key released
                 {

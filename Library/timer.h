@@ -17,7 +17,7 @@
 #define CLOCK_25MHz
 #endif
 
-#define TIMER_POWER_MODE LPM1_bits
+#define TIMER_POWER_MODE LPM0_bits
 
 #define TIMER_ENABLE_TA0
 #define TIMER_FREQUENCY_A0_CCR0 200

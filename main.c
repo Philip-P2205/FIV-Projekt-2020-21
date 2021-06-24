@@ -29,6 +29,12 @@ int main(void)
 
     while (1)
     {
+        if (TASK_ENABLED(TASK_PS2))
+        {
+//            __no_operation(); // Just for breakpoint
+            TASK_DISABLE(TASK_PS2);
+            delayMs(50); //
+        }
         __bic_SR_register(LPM0_bits);
     }
 }
@@ -43,11 +49,6 @@ void init()
 //    timerA0.ccr0 = &debounceTaskEnable;
 }
 
-inline void keyboardISR()
-{
-    __no_operation(); // Just for breakpoint
-}
-
 /* Interrupts */
 
 // User interrupts
@@ -58,7 +59,7 @@ __interrupt void unmi()
     {
         BIT_DISABLE(SFRIFG1, NMIIFG);
         BIT_DISABLE(user_interrupts, KBINT);
-        keyboardISR(); // Call keyboard interrupt service routine
+        TASK_ENABLE(TASK_PS2);
     }
 }
 
