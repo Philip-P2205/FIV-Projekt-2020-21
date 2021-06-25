@@ -33,7 +33,7 @@ int main(void)
         {
 //            __no_operation(); // Just for breakpoint
             TASK_DISABLE(TASK_PS2);
-            delayMs(50); //
+            delayMs(50);
         }
         __bic_SR_register(LPM0_bits);
     }
