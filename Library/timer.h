@@ -11,7 +11,7 @@
 #ifndef TIMER_TIMER_H_
 #define TIMER_TIMER_H_
 
-//#define CLOCK_8MHz
+#define CLOCK_8MHz
 
 #ifndef CLOCK_8MHz
 #define CLOCK_25MHz

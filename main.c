@@ -6,6 +6,11 @@
 
 uint16_t todo_tasks;
 uint8_t user_interrupts;
+uint8_t col = 0;
+uint8_t row = 0;
+unsigned char character;
+
+unsigned char *text = " ";
 
 void configIO();
 
@@ -16,32 +21,45 @@ inline void keyboardISR();
 int main(void)
 {
     WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-
-    configTimer();
-    configDebounce();
-    configIO();
-    configPS2();
-
-    init();
-
-    ENABLE_SWINT(); // Enable software interrupts
-    __enable_interrupt();
+//
+//    configTimer();
+////    configDebounce();
+////    configIO();
+//    configPS2();
+//
+//    init();
+//
+//    ENABLE_SWINT(); // Enable software interrupts
+//    __enable_interrupt();
+//
+////    lcdConstructor(LCD_I2C_ADDRESS, 16, 2); // initialize LCD library for LCD1602 with driver at
+////    lcdInit();
+////    lcdBacklight();
 
     while (1)
     {
-        if (TASK_ENABLED(TASK_PS2))
-        {
-//            __no_operation(); // Just for breakpoint
-            TASK_DISABLE(TASK_PS2);
-            delayMs(50);
-        }
+//        if (TASK_ENABLED(TASK_PS2))
+//        {
+////            text[0] = character;
+////            lcdSetCursor(col, row);
+////            lcdPrint(text);
+////            if (col == 15)
+////            {
+////                col = 0;
+////                row ^= 1;
+////            }
+////            else
+////                col++;
+////            __no_operation(); // Just for breakpoint
+//            TASK_DISABLE(TASK_PS2);
+//    }
         __bic_SR_register(LPM0_bits);
     }
 }
 
 void configIO()
 {
-    // P1DIR |= BIT0;
+// P1DIR |= BIT0;
 }
 
 void init()
@@ -67,7 +85,6 @@ __interrupt void unmi()
 __interrupt void Port_1()
 {
     __bic_SR_register_on_exit(CPUOFF);
-    DEBOUNCE_ISR_PORT1();
 }
 
 #pragma vector = PORT2_VECTOR
@@ -77,7 +94,7 @@ __interrupt void Port2()
 
     if (BIT_ENABLED(PS2_SCL_IFG, PS2_SCL)) // SCL interrupt
     {
-        isrPS2();
-        CLR_IFG(PS2_SCL);
+//    isrPS2();
+//    CLR_IFG(PS2_SCL);
     }
 }

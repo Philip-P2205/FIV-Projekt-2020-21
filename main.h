@@ -10,7 +10,8 @@
 #include "Library/debounce.h"
 #include "Library/timer.h"
 #include "Library/util.h"
-#include "Library/ps2.h"
+#include "Library/LiquidCrystal.h"
+#include "Library/PS3.h"
 
 #ifndef MAIN_H_
 #define MAIN_H_
@@ -30,6 +31,8 @@
 #define TASK_C  BITC
 #define TASK_E  BITE
 #define TASK_F  BITF
+
+#define LCD_I2C_ADDRESS 0x27 // Address of I2C LCD driver
 
 /* Macros */
 

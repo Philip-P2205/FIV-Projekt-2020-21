@@ -57,6 +57,9 @@ void lcdConstructor(uint8_t addr, uint8_t cols, uint8_t rows)
     _backlightval = LCD_NOBACKLIGHT;
 }
 
+/**
+ * Only initialize the LCD if interrupts are enabled!
+ */
 void lcdInit()
 {
     lcdInit_priv();
@@ -310,9 +313,6 @@ void lcdPulseEnable(uint8_t _data)
     lcdExpanderWrite(_data | En); // En high
 
     __delay_cycles(5000); // En pulse must be >450ns
-#else
-    __delay_cycles(5000 * 4); // En pulse must be >450ns
-#endif
     lcdExpanderWrite(_data & ~En);
 
     __delay_cycles(50000); // commands need > 37us to settle

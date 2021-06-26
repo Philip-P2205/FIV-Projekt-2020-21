@@ -15,7 +15,7 @@
 #define BIT_ENABLE(t, b) (t) |= (b)
 #define BIT_TOGGLE(t, b) (t) ^= (b)
 
-#define BIT_ENABLED(t, b) (((t) & (b)) !=0 )
+#define BIT_ENABLED(t, b) (((t) & (b)) !=0)
 #define BIT_DISABLED(t, b) (((t) & (b)) == 0)
 
 #define TIE_TO_STATE(t, b, s) { \
