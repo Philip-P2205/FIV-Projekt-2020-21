@@ -1,5 +1,5 @@
 /*
- * PS3.c
+ * PS2.c
  *
  *  Created on: 23.05.2021
  *      Author: Philip Prohaska, Jakob Posselt

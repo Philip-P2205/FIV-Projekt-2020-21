@@ -3,6 +3,11 @@
  *
  *  Created on: 01.04.2021
  *      Author: Philip Prohaska
+ *
+ *      This library takes care of all timer related stuff regarding the MSP430F5529 microprocessor.
+ *      The values for the timers can be fully configured (values in Hz). If the value of a CCR is set
+ *      at 1000 Hz the use of the delayMs(<delay>) function to delay a process synchronously in ms
+ *      becomes possible.
  */
 #include <msp430.h>
 #include <stdint.h>

@@ -41,9 +41,6 @@
 #define TASK_DISABLE(task)  todo_tasks  &= ~(task)
 #define TASK_ENABLED(task)  (todo_tasks &   (task))
 
-// Interrupt ID for user interrupts
-#define KBINT 0x01
-
 extern uint16_t todo_tasks;
 
 #endif /* MAIN_H_ */

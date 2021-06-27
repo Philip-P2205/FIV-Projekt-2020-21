@@ -1,10 +1,3 @@
-/*
- * binconst.h
- *
- *  Created on: 08.04.2021
- *      Author: Philip Prohaska
- */
-
 #ifndef LIBRARY_BINCONST_H_
 #define LIBRARY_BINCONST_H_
 

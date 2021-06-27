@@ -3,6 +3,8 @@
  *
  *  Created on: 31.03.2021
  *      Author: Philip Prohaska
+ *
+ *      This library debounces the ports 1 and 2.
  */
 
 #include <msp430.h>
