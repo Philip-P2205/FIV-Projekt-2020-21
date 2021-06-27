@@ -4,147 +4,162 @@
  *  Created on: 23.05.2021
  *      Author: Philip Prohaska, Jakob Posselt
  */
-#include "PS3.h"
+#include <Library/PS2.h>
 
 // private:
 uint8_t keyboard_status = 0;
-struct PS2
-{
-    uint8_t status = 0;
-    uint8_t mask;
-    uint8_t data;
-    uint8_t character;
-} ps2;
+PS2 ps2;
+
+void processData();
 
 void configPS2()
 {
     DIR_INPUT(PS2_SCL);
-    DIR_OUTPUT(PS2_SDA);
+    DIR_INPUT(PS2_SDA);
     IES_FALLING(PS2_SCL);
     PS2_SCL_IFG = 0;
     IE_ENABLE(PS2_SCL);
+    P2DIR |= BIT0 | BIT2;
+    P2OUT |= BIT0 | BIT2;
 }
 
 void ps2ISR()
 {
-    if (BIT_ENABLED(ps2.status, PS2_START))
+    if (ps2.mask == 0)
     {
-        // TODO: read in PS/2 scan code
-        if (BIT_ENABLED(PS2_SDA_IN, PS2_SDA))
-        {
-            data |= mask;
-            BIT_TOGGLE(ps2.status, PS2_PARITY_BIT); // Toggle odd parity bit
-        }
-        else
-            data &= ~mask;
+        ps2.mask = PS2_MASK;
+        P2OUT &= ~BIT2;
     }
-    else if (BIT_ENABLED(ps2.status, PS2_PARITY_CHECK))
-    {
-        // TODO: check parity
-        // The following state indicate corrupt data:
-        if ((BIT_ENABLED(PS2_SDA_IN, PS2_SDA)
-                && BIT_ENABLED(ps2.status, PS2_PARITY_BIT))
-                || (BIT_DISABLED(PS2_SDA_IN, PS2_SDA)
-                        && BIT_DISABLED(ps2.statix, PS2_PARITY_BIT)))
-        {
-        }
-        else // The data was received correctly
-        {
-            getChar(ps2.data);
-        }
 
-        // TODO: if correct, get character
-        // TODO: move character into buffer
-    }
+    P2OUT &= ~BIT0;
+    if (BIT_ENABLED(PS2_SDA_IN, PS2_SDA))
+        ps2.scancode |= ps2.mask;
     else
+        ps2.scancode &= ~ps2.mask;
+
+    ps2.mask <<= 1;
+
+    if (ps2.mask == 0x0800)
     {
-        BIT_DISABLE(ps2.status, PS2_PARITY_BIT); // Reset parity bit before receiving data.
-        BIT_ENABLE(ps2.status, PS2_START); // This is the start bit. enable ps2 data read in now.
+        P2OUT |= BIT2;
+        processData();
+        P2OUT &= ~BIT2;
+        ps2.scancode = 0;
+        ps2.mask = 0;
+        P2OUT |= BIT2;
+    }
+    P2OUT |= BIT0;
+}
+
+void processData()
+{
+    if (BIT_ENABLED(keyboard_status, KB_RELEASED))
+    {
+        BIT_DISABLE(keyboard_status, KB_RELEASED);
+        return;
+    }
+    ps2.character = getChar((uint8_t) (ps2.scancode >> 1));
+    uint8_t i;
+
+// Handle special cases e.g. Enter, Space, etc
+    switch (ps2.character)
+    {
+    case 0x00: // NULL
+        break;
+    case 0x04: // EOT
+        break;
+    default:
+        for (i = 63; i > 0; --i)
+            ps2.buffer[i] = ps2.buffer[(uint8_t) (i - 1)];
+        ps2.buffer[0] = ps2.character;
+        ps2.buffer[32] = (uint8_t) (ps2.scancode >> 1);
+        TASK_ENABLE(TASK_PS2);
+        break;
     }
 }
 
-unsigned char getChar(uint8_t code)
+unsigned char getChar(uint8_t scancode)
 {
-    switch (code)
+    switch (scancode)
     {
 // --------- ROW0 ----------
     case 0x0E: // ^
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
             return '^';
         else
-            return '°';
+            return 0;
 
     case 0x16: // 1
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '1';
-        else
             return '!';
+        else
+            return '1';
 
     case 0x1E: // 2
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '2';
-        else
             return '"';
+        else
+            return '2';
 
     case 0x26: // 3
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '3';
+            return 0;
         else
-            return '§';
+            return '3';
 
     case 0x25: // 4
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '4';
-        else
             return '$';
+        else
+            return '4';
 
     case 0x2E: // 5
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '5';
-        else
             return '%';
+        else
+            return '5';
 
     case 0x36: // 6
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '6';
-        else
             return '&';
+        else
+            return '6';
 
     case 0x3D: // 7
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '7';
-        else
             return '/';
+        else
+            return '7';
 
     case 0x3E: // 8
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '8';
-        else
             return '(';
+        else
+            return '8';
 
     case 0x46: // 9
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '9';
-        else
             return ')';
+        else
+            return '9';
 
     case 0x45: // 0
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '0';
-        else
             return '=';
-
-    case 0x4E: // ß
-        if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return 'ß';
         else
+            return '0';
+
+    case 0x4E: // ï¿½
+        if (BIT_ENABLED(keyboard_status, KB_SHIFT))
             return '?';
-
-    case 0x55: // ´
-        if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return '´';
         else
+            return 0;
+
+    case 0x55: // `
+        if (BIT_ENABLED(keyboard_status, KB_SHIFT))
             return '`';
+        else
+            return '´';
 
         // ---------- ROW 1 ----------
     case 0x0D: // TAB
@@ -210,11 +225,11 @@ unsigned char getChar(uint8_t code)
         else
             return 'p';
 
-    case 0x54: // Ü
+    case 0x54: // ï¿½
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return 'Ü';
+            return 'ï¿½';
         else
-            return 'ü';
+            return 'ï¿½';
 
     case 0x5B: // +
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
@@ -288,17 +303,17 @@ unsigned char getChar(uint8_t code)
         else
             return 'l';
 
-    case 0x4C: // Ö
+    case 0x4C: // ï¿½
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return 'Ö';
+            return 'ï¿½';
         else
-            return 'ö';
+            return 'ï¿½';
 
-    case 0x52: // Ä
+    case 0x52: // ï¿½
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
-            return 'Ä';
+            return 'ï¿½';
         else
-            return 'ä';
+            return 'ï¿½';
 
     case 0x5D: // #
         if (BIT_ENABLED(keyboard_status, KB_SHIFT))
@@ -446,11 +461,14 @@ unsigned char getChar(uint8_t code)
         }
         return 0;
 
-    case 0x2F: // RIGHT CLICK
+    case 0x2F:    // RIGHT CLICK
         return 0; // ignore this key
 
+        // ---------- PS/2 protocol codes ----------
+    case 0xF0:
+        BIT_ENABLE(keyboard_status, KB_RELEASED);
+        return 0x04;
     default:
         return 0;
     }
 }
-
