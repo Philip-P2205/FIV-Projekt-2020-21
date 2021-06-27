@@ -6,12 +6,13 @@
  */
 #include <msp430.h>
 #include <stdint.h>
+#include <string.h>
 #include "Library/binconst.h"
 #include "Library/debounce.h"
 #include "Library/timer.h"
 #include "Library/util.h"
 #include "Library/LiquidCrystal.h"
-#include "Library/PS3.h"
+#include "Library/PS2.h"
 
 #ifndef MAIN_H_
 #define MAIN_H_
@@ -44,6 +45,5 @@
 #define KBINT 0x01
 
 extern uint16_t todo_tasks;
-extern uint8_t user_interrupts;
 
 #endif /* MAIN_H_ */
